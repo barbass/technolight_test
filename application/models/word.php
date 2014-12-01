@@ -109,11 +109,19 @@ class Word extends CI_Model {
 	public function getTranslateWords($word_id, $language_id_to = 2) {
 		$word = $this->getWord($word_id);
 
+		// Поиск в обе стороны переводов
 		$this->db->select("w.*, l.language")
 			->from("word AS w")
 			->join('word_to_word AS wtw', 'wtw.word_id_to = w.word_id')
 			->join('language AS l', 'l.language_id = w.language_id')
-			->where('wtw.word_id_from', (int)$word_id);
+			->where("(
+				wtw.word_id_from = ".(int)$word_id."
+				OR
+				wtw.word_id_to = ".(int)$word_id."
+			)", NULL, FALSE)
+
+			->where('w.word_id !=', (int)$word_id)
+			;
 
 		$this->db->group_by('w.word_id');
 
