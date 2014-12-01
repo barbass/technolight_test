@@ -1,0 +1,24 @@
+<FilesMatch "\.(git)">
+	Order deny,allow
+	Deny from all
+</FilesMatch>
+
+# Устанавливаем страницу для ошибки 404
+ErrorDocument 404 /index.php
+
+# Устанавливаем индексный файл для директории
+DirectoryIndex index.php
+
+# Запрещаем доступ к каталогу .git с помощью редиректа
+RedirectMatch 301 ^(.*)\.git(.*)$ index.php
+
+# Определяем правила для модуля mod_rewrite
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Редирект всех запросов на index.php
+	RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>

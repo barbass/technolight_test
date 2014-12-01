@@ -1,0 +1,92 @@
+header {
+
+}
+
+body {
+
+}
+
+footer {
+	margin-top: 20px;
+	padding-top: 10px;
+	text-align: center;
+	background-color: #F5F5F5;
+}
+
+#header {
+
+}
+
+.main {
+	overflow: auto;
+}
+
+/* Левая колонка */
+#column_left {
+
+}
+
+#column_left .company_list p {
+	padding-left: 5px;
+}
+/**/
+
+
+/* Форма авторизации */
+.form-signin {
+	margin: 0 auto;
+	max-width: 360px;
+	padding: 15px;
+}
+/**/
+
+.unbordered {
+	border: none !important;
+}
+
+/* Обязательные поля */
+span.required {
+	color: red;
+}
+
+/* Bootstrap перебивает отображение дат */
+.ui-widget select {
+	color: black !important;
+}
+
+/* Блок категорий/услугодателей */
+#categoryList div.category {
+	padding-bottom: 20px;
+}
+
+#categoryList div.category div.col-6 {
+	padding-bottom: 20px;
+	height: 50px;
+}
+#categoryList div.company div.col-6 {
+	padding-bottom: 20px;
+	height: 70px;
+}
+
+/* Отображение ajax-запросов */
+#ajaxLoading {
+	background-color: #f5f5f5;
+	width: 40%;
+	border-radius: 0px 0px 2px 2px;
+	text-align: center;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	padding: 10px;
+	z-index: 90;
+	position: fixed;
+	left: 35%;
+	top: 0;
+	text-align: center;
+}
+#ajaxLoading .progress {
+	width: 70%;
+	margin: 0 auto;
+}
+
+#ajaxLoading .progress-bar {
+	width: 100%;
+}
