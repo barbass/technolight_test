@@ -10,6 +10,9 @@ class Translate extends CI_Controller {
 		$this->url = 'translate/';
 	}
 
+	/**
+	 * Основная страница
+	 */
 	public function index() {
 		if (!$this->db_install->check()) {
 			$this->session->set_flashdata('error', 'Таблиц в базе нет');
@@ -44,8 +47,9 @@ class Translate extends CI_Controller {
 			'form' => $form,
 			'action' => array(
 				'form' => $url_form,
+				'get_translate' => base_url($this->url.'ajax_translate'),
 			),
-		), false);
+		), true);
 		$this->load->view('layout', array(
 			'content' => $content,
 			'title' => 'Перевод',
@@ -54,6 +58,9 @@ class Translate extends CI_Controller {
 		));
 	}
 
+	/**
+	 * Обновление структуры базы
+	 */
 	public function db() {
 		if ($this->db_install->check()) {
 			$this->session->set_flashdata('success', 'Все таблицы созданы');
@@ -73,5 +80,27 @@ class Translate extends CI_Controller {
 			'error' => $this->session->flashdata('error'),
 			'success' => $this->session->flashdata('success'),
 		));
+	}
+
+	/**
+	 * Поиск перевода
+	 */
+	public function ajax_translate() {
+		$word_id = $this->input->post('word_id');
+		$data = $this->word->getTranslateWords($word_id);
+
+		$result = array(
+			'success' => true,
+			'translate_words' => array(),
+		);
+		if ($data) {
+			$result['word_id'] = $data['word_id'];
+			$result['word'] = $data['word'];
+			$result['translate_words'] = $data['translate_words'];
+		} else {
+			$result['success'] = false;
+		}
+
+		echo json_encode($result);
 	}
 }

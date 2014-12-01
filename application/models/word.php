@@ -7,6 +7,27 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Word extends CI_Model {
 
+	/**
+	 * Поиск слова
+	 * @param int
+	 * @return array
+	 */
+	public function getWord($word_id) {
+		$this->db->select("w.*, l.language")
+			->from('word AS w')
+			->join('language AS l', 'l.language_id = w.language_id');
+		$this->db->where('w.language_id', 1);
+
+		$this->db->where('w.word_id', (int)$word_id);
+
+		$this->db->group_by('w.word_id');
+
+		$result = $this->db->get();
+		$result = $result->row_array();
+
+		return $result;
+	}
+
 	public function getWords($params = array()) {
 		if (!isset($params['limit'])) {
 			$limit = 30;
@@ -78,6 +99,69 @@ class Word extends CI_Model {
 		$result = $result->row_array();
 
 		return $result['total'];
+	}
+
+	/**
+	 * Поиск перевода слова
+	 * @param mixed(int | string) $word_id Идентфикатор слова
+	 * @param int $language_id_to Идентификатор языка перевода
+	 */
+	public function getTranslateWords($word_id, $language_id_to = 2) {
+		$word = $this->getWord($word_id);
+
+		$this->db->select("w.*, l.language")
+			->from("word AS w")
+			->join('word_to_word AS wtw', 'wtw.word_id_to = w.word_id')
+			->join('language AS l', 'l.language_id = w.language_id')
+			->where('wtw.word_id_from', (int)$word_id);
+
+		$this->db->group_by('w.word_id');
+
+		$this->db->order_by('w.word_id', 'asc');
+
+		$result = $this->db->get();
+		$result = $result->result_array();
+
+		if (!$result) {
+			$result = $this->translateapi->getTranslateWords($word_id);
+			if ($result) {
+				return $this->getTranslateWords($word_id);
+			} else {
+				return false;
+			}
+		}
+
+		return array(
+			'word' => $word['word'],
+			'word_id' => $word['word_id'],
+			'translate_words' => $result,
+		);
+	}
+
+	/**
+	 * Сохранение переводов
+	 * @param int Идентификатор слова
+	 * @param array Список переводов
+	 * @param int Идентификатор языка переводов
+	 */
+	public function saveTranslateWords($word_id_from, $words = array(), $language_id_to = 2) {
+		$words_id_to = array();
+		$data_ar = array();
+		foreach($words as $w) {
+			$data = array(
+				'word' => trim($w),
+				'language_id' => 2,
+			);
+
+			$this->db->insert('word', $data);
+			$data_ar[] = array(
+				'word_id_from' => $word_id_from,
+				'word_id_to' => $this->db->insert_id(),
+
+			);
+		}
+
+		$this->db->insert_batch('word_to_word', $data_ar);
 	}
 
 }

@@ -109,7 +109,7 @@ $autoload['language'] = array();
 |
 */
 
-$autoload['model'] = array('db_install', 'word');
+$autoload['model'] = array('db_install', 'word', 'translateapi',);
 
 
 /* End of file autoload.php */
