@@ -102,7 +102,7 @@ class Word extends CI_Model {
 	}
 
 	/**
-	 * Поиск перевода слова
+	 * Поиск переводов слова
 	 * @param mixed(int | string) $word_id Идентфикатор слова
 	 * @param int $language_id_to Идентификатор языка перевода
 	 */

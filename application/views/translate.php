@@ -84,7 +84,7 @@
 	function insertTranslate(word_id, words) {
 		var block = $('.table').find('a[data-word_id = '+word_id+']').parents('tr').eq(0).find('td.translate');
 		$(block).html('');
-		var html_ar = ["<table class='table'><tr><td>Слово</td><td>Перевод</td></tr>"];
+		var html_ar = ["<table class='table'><tr><th>Слово</th><th>Язык</th></tr>"];
 		var str = "";
 		for(var key in words) {
 			str = "<tr>";
