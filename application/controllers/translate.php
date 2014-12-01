@@ -19,35 +19,11 @@ class Translate extends CI_Controller {
 			redirect($this->url.'/db');
 		}
 
-		$form = $this->input->get();
-		$url = '?page={page}';
-		if (!empty($form['word'])) {
-			$url = '?page={page}&word='.$form['word'];
-		}
-		$url_form = $this->url.'index/?';
-		if (!empty($form['word'])) {
-			$url_form .= 'word='.$form['word'];
-		}
-		if (!empty($form['page'])) {
-			$url_form .= 'page='.$form['page'];
-		}
-
-		$words = $this->word->getWords($form);
-		$words_total = $this->word->getWordsTotal($form);
-
-		$this->pagination_library->total = $this->word->getWordsTotal($form);
-		$this->pagination_library->page = (isset($form['page'])) ? $form['page'] : 1;
-		$this->pagination_library->limit = 30;
-		$this->pagination_library->url = base_url().$this->url.'index/'.$url;
-		$pages = $this->pagination_library->render();
-
 		$content = $this->load->view('translate', array(
-			'words' => $words,
-			'pages' => $pages,
-			'form' => $form,
 			'action' => array(
-				'form' => $url_form,
 				'get_translate' => base_url($this->url.'ajax_translate'),
+				'list' => base_url($this->url),
+				'get_words' => base_url($this->url.'ajax_get_words'),
 			),
 		), true);
 		$this->load->view('layout', array(
@@ -56,6 +32,27 @@ class Translate extends CI_Controller {
 			'error' => $this->session->flashdata('error'),
 			'success' => $this->session->flashdata('success'),
 		));
+	}
+
+	/**
+	 * Подгрузка списка слов
+	 */
+	public function ajax_get_words() {
+		$form = $this->input->post();
+
+		$words = $this->word->getWords($form);
+		$words_total = $this->word->getWordsTotal($form);
+
+		$result = array(
+			'words' => $words,
+			'total' => (int)$words_total,
+			'page' => (!empty($form['page'])) ? $form['page'] : 1,
+			'search' => (!empty($form['word'])) ? $form['word'] : '',
+			'limit' => 30,
+			'success' => true,
+		);
+
+		echo json_encode($result);
 	}
 
 	/**
