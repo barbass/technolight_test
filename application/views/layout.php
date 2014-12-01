@@ -21,55 +21,26 @@
 
 	<!-- Шапка -->
 	<div id="header">
-		<div role="navigation" class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
-						<span class="sr-only"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a href="<?php echo $url['project'];?>" class="navbar-brand"><?php echo $text['project_name'];?></a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<?php if (!empty($user_info)) { ?>
-							<li>
-								<a href="<?php echo $url['account'];?>">
-									<?php echo $text['user'];?>
-									<?php echo $user_info['lastname'].' ('.$user_info['login'].')';?>
-								</a>
-							</li>
-						<?php } ?>
-						<?php if ($language_list) { ?>
-							<li class="dropdown">
-								<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-									<?php echo $text['language'];?> <b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu inverse">
-									<?php foreach($language_list as $l) { ?>
-										<li class="<?php echo ($l['active']) ? 'disabled' : '';?>">
-											<a <?php if(!$l['active']) echo "href='".$l['href']."'";?> >
-												<?php echo $l['name'];?>
-											</a>
-										</li>
-										<li class="divider"></li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php } ?>
 
-						<li><a href="<?php echo $url['authorized'];?>"><?php echo $text['authorized'];?></a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<div class="container-fluid">
 		<div class="row">
-			<?php echo $content;?>
+			<?php if (!empty($error)) { ?>
+				<div class="alert alert-dismissable alert-danger">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<?php echo $error;?>
+				</div>
+			<?php } ?>
+
+			<?php if (!empty($success)) { ?>
+				<div class="alert alert-dismissable alert-success">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<?php echo $success;?>
+				</div>
+			<?php } ?>
+
+			<?php echo (isset($content)) ? $content : '';?>
 		</div>
 	</div>
 
