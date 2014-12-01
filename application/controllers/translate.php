@@ -4,7 +4,10 @@ class Translate extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->url = 'translate';
+		if (!$this->input->is_ajax_request() && !$this->input->is_cli_request()) {
+			$this->output->enable_profiler(TRUE);
+		}
+		$this->url = 'translate/';
 	}
 
 	public function index() {
@@ -13,7 +16,36 @@ class Translate extends CI_Controller {
 			redirect($this->url.'/db');
 		}
 
-		$content = $this->load->view('translate', null, false);
+		$form = $this->input->get();
+		$url = '?page={page}';
+		if (!empty($form['word'])) {
+			$url = '?page={page}&word='.$form['word'];
+		}
+		$url_form = $this->url.'index/?';
+		if (!empty($form['word'])) {
+			$url_form .= 'word='.$form['word'];
+		}
+		if (!empty($form['page'])) {
+			$url_form .= 'page='.$form['page'];
+		}
+
+		$words = $this->word->getWords($form);
+		$words_total = $this->word->getWordsTotal($form);
+
+		$this->pagination_library->total = $this->word->getWordsTotal($form);
+		$this->pagination_library->page = (isset($form['page'])) ? $form['page'] : 1;
+		$this->pagination_library->limit = 30;
+		$this->pagination_library->url = base_url().$this->url.'index/'.$url;
+		$pages = $this->pagination_library->render();
+
+		$content = $this->load->view('translate', array(
+			'words' => $words,
+			'pages' => $pages,
+			'form' => $form,
+			'action' => array(
+				'form' => $url_form,
+			),
+		), false);
 		$this->load->view('layout', array(
 			'content' => $content,
 			'title' => 'Перевод',
